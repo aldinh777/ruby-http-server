@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
+		<title>Simple Explorer</title>
+		<style>
+			a{
+				text-decoration: none;
+				text-align: justify;
+			}
+			li{
+				padding: 5px;
+			}
+		</style>
+	</head>
+	<body style="font-family: consolas; background-color: black; word-wrap: break-word;">
+		<div style="border: 10px solid orange; background-color: lightblue; padding-right: 4%;">
+			<h1 style="text-align: center;">Simple Explorer</h1>
+			<ul style="list-style-type: none; list-style-position: outside;">
+				<div style="background-color: blue;">
+					<a href="./..">
+						<div style="background-color: orange; border: 3px solid red; padding: 5px; text-align: center;">Back</div>
+					</a>
+				</div>
+				<hr/>
+				<form method="post" enctype="multipart/form-data" style="text-align: left;">
+					<input type="file" name="file" style="text-overflow: hidden;">
+					<button type="submit">Upload</button>
+				</form>
+				<form method="post" style="text-align: right;">
+					<input type="text" name="folder">
+					<button>Create Folder</button>
+				</form>
+				<hr>
+				<% Dir.chdir(dir) %>
+				<% Dir.glob('*').each do |fdir| %>
+					<% fdir = fdir+'/' if File.directory?(fdir) %>
+					<a href="/<%= dir %><%= fdir %>">
+						<li style="border: 2px solid green; background-color: yellow; text-align: center;">
+							<% ext = File.extname(fdir).downcase
+								case ext
+								when '.png', '.jpg', '.jpeg'
+									if File.size(fdir) <= 1000000
+								%>
+								<img src="/<%= dir %><%= fdir %>" style="width: 25%; height: 25%;"><br>
+								<% end %>
+							<% end %>
+							<%= File.basename(fdir) %>
+							<% if File.file?(fdir) then %>
+								<% size = File.size(fdir) %>
+								<% if size <= 1024 then %>
+									(<%= size %>B)
+								<% elsif size <= 1024**2 then %>
+									(<%= size/1024 %>KB)
+								<% elsif size <= 1024**3 then %>
+									(<%= size/1024**2 %>MB)
+								<% else %>
+									(<%= size/1024**3 %>GB)
+								<% end %>
+							<% end %>
+						</li>
+					</a>
+				<% end %>
+			</ul>
+		</div>
+	</body>
+</html>
